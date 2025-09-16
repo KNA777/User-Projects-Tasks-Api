@@ -19,7 +19,6 @@ async def sse_stream(
         token: str = Query(None)
 
 ):
-
     if not token:
         raise HTTPException(status_code=401, detail="Token required")
 
@@ -51,20 +50,6 @@ async def sse_stream(
     except Exception as e:
         print(f"❌ Ошибка аутентификации: {str(e)}")
         raise HTTPException(status_code=401, detail="Invalid token")
-
-
-@router.get("/get-token")
-async def get_test_token(db: DBDep):
-    """Получить тестовый токен (для разработки)"""
-    # Находим тестового пользователя
-    user = await UserService(db).get_user(email="user@example.com")
-    if not user:
-        raise HTTPException(status_code=404, detail="Test user not found")
-
-    # Создаем токен
-    token = AuthService.create_access_token({"user_id": user.id})
-
-    return {"token": token, "user_id": user.id, "email": user.email}
 
 
 @router.get("/test-page", response_class=HTMLResponse)
