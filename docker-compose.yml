@@ -2,7 +2,6 @@ services:
   final_task_backend_service:
     build:
       context: .
-#    image: books_image
     container_name: "final_task_backend_container"
     ports:
       - "7777:8000"
