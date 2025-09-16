@@ -1,0 +1,87 @@
+services:
+  final_task_backend_service:
+    build:
+      context: .
+#    image: books_image
+    container_name: "final_task_backend_container"
+    ports:
+      - "7777:8000"
+    networks:
+      - final_task_network
+    environment:
+      DB_HOST: final_task_db_container
+      DB_PORT: 5432
+      DB_USER: postgres
+      DB_PASS: postgres
+      DB_NAME: final_task_db
+      REDIS_HOST: final_task_redis
+      REDIS_PORT: 6379
+    depends_on:
+      final_task_db_service:
+        condition: service_healthy
+      final_task_redis_service:
+        condition: service_healthy
+
+  final_task_celery_worker_service:
+    build:
+      context: .
+    container_name: "final_task_celery_container"
+    networks:
+      - final_task_network
+    environment:
+      REDIS_HOST: final_task_redis
+      REDIS_PORT: 6379
+      DB_HOST: final_task_db_container
+      DB_PORT: 5432
+      DB_USER: postgres
+      DB_PASS: postgres
+      DB_NAME: final_task_db
+    command: "celery -A src.tasks.celery_app:celery_instance worker -l INFO --pool=solo"
+    depends_on:
+      final_task_backend_service:
+        condition: service_started
+      final_task_db_service:
+        condition: service_healthy
+      final_task_redis_service:
+        condition: service_healthy
+
+  final_task_redis_service:
+    image: redis:7.4
+    container_name: "final_task_redis"
+    ports:
+      - "7379:6379"
+    networks:
+      - final_task_network
+    healthcheck:
+      test: [ "CMD", "redis-cli", "ping" ]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+
+  final_task_db_service:
+    image: postgres:17
+    container_name: "final_task_db_container"
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: final_task_db
+    ports:
+      - "6432:5432"
+    networks:
+      - final_task_network
+    volumes:
+      - final_task_data:/var/lib/postgresql/data
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U postgres -d final_task_db" ]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+
+networks:
+  final_task_network:
+    driver: bridge
+
+volumes:
+  final_task_data:
