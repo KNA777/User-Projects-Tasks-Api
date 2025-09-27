@@ -16,6 +16,6 @@ class UsersOrm(BaseOrm):
     is_superuser: Mapped[bool] = mapped_column(nullable=False, default=False)
 
     projects: Mapped[list["ProjectsOrm"]] = relationship(
-        back_populates="users"
+        back_populates="user"
     )
 
