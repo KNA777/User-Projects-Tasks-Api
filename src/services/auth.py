@@ -1,13 +1,11 @@
 from datetime import datetime, timezone, timedelta
 
-from asyncpg import UniqueViolationError
 from fastapi import Response, HTTPException
 import jwt
 from passlib.context import CryptContext
-from sqlalchemy.exc import IntegrityError
 
-from src.exceptions import ObjectAlreadyExistsException, UserPasswordException
-from src.schemas.users import UserRegRequest, UserAdd, UserLogin
+from src.exceptions import UserPasswordException, SuperUserPasswordException
+from src.schemas.users import UserRegRequest, UserLogin
 from src.services.base import BaseService
 from src.settings_config import settings
 
@@ -40,12 +38,12 @@ class AuthService(BaseService):
     def create_hashed_password(cls, password):
         return cls.pwd_contex.hash(password)
 
-
     async def registration(self, data: UserRegRequest):
         hashed_password = self.create_hashed_password(password=data.password)
+        if data.superuser_psw and data.superuser_psw != settings.SUPERUSER_PASSWORD:
+            raise SuperUserPasswordException
         data_to_db = data.user_add(hashed_password)
         return await self.db.user.add(data_to_db)
-
 
     async def login(self, data: UserLogin, response: Response):
         user = await self.db.user.get_user_hashed_password(email=data.email)
@@ -54,8 +52,3 @@ class AuthService(BaseService):
         access_token = self.create_access_token({"user_id": user.id})
         response.set_cookie("access_token", access_token)
         return access_token
-
-
-
-
-

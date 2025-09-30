@@ -4,7 +4,7 @@ from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
 class Settings(BaseSettings):
-    MODE: Literal["TEST", "PROD", "LOCAL"]
+    MODE: Literal["TEST", "PROD", "LOCAL"] = "LOCAL"
 
     DB_USER: str | None = None
     DB_PASSWORD: str | None = None
@@ -18,6 +18,8 @@ class Settings(BaseSettings):
 
     REDIS_HOST: str | None = None
     REDIS_PORT: int | None = None
+
+    SUPERUSER_PASSWORD: str | None = None
 
     model_config = SettingsConfigDict(env_file=".env")
 

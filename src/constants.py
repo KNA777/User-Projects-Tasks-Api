@@ -7,7 +7,7 @@ OPENAPI_EXAMPLES_REG = openapi_examples = {
                     "username": "user1",
                     "email": "user@example.com",
                     "password": "string",
-                    "is_superuser": True
+                    "superuser_psw": "string"
                 }
             ),
             "Example 2": Example(
@@ -16,7 +16,7 @@ OPENAPI_EXAMPLES_REG = openapi_examples = {
                     "username": "user2",
                     "email": "user2@example.com",
                     "password": "string",
-                    "is_superuser": False
+                    "superuser_psw": "string"
                 }
             ),
             "Example 3": Example(
@@ -25,7 +25,7 @@ OPENAPI_EXAMPLES_REG = openapi_examples = {
                     "username": "user3",
                     "email": "user3@example.com",
                     "password": "string",
-                    "is_superuser": False
+                    "superuser_psw": "string"
                 }
             )
 }

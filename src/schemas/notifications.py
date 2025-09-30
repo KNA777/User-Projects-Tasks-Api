@@ -1,5 +1,5 @@
 from pydantic import BaseModel
-from datetime import datetime
+
 
 class TaskAssignedNotification(BaseModel):
     """Уведомление о назначении задачи"""
@@ -9,6 +9,7 @@ class TaskAssignedNotification(BaseModel):
     task_title: str
     project_name: str
     timestamp: str
+
 
 class CommentAddedNotification(BaseModel):
     """Уведомление о новом комментарии"""

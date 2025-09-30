@@ -21,6 +21,9 @@ class ObjectAlreadyExistsException(CustomExceptions):
     detail = "Object exist exception"
 
 
+class SuperUserPasswordException(CustomExceptions):
+    detail = "Wrong superuser password registration exception"
+
 
 class CustomHTTPExceptions(HTTPException):
     status_code = 500
@@ -28,6 +31,11 @@ class CustomHTTPExceptions(HTTPException):
 
     def __init__(self):
         super().__init__(status_code=self.status_code, detail=self.detail)
+
+
+class SuperUserPasswordHTTPException(CustomHTTPExceptions):
+    status_code = 409
+    detail = "Wrong superuser password registration exception"
 
 
 class UserNotFoundHTTPException(CustomHTTPExceptions):

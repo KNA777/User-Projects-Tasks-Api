@@ -8,20 +8,29 @@ class UserRegRequest(BaseModel):
     username: str
     email: EmailStr
     password: str = Body(..., min_length=6, max_length=18)
-    is_superuser: bool | None = False
+    superuser_psw: str | None = None
 
     def user_add(self, hashed_password: str):
-        return UserAdd(
+        if self.superuser_psw:
+            return UserAddSuperUserTrue(
+                **self.model_dump(exclude={"password"}),
+                hashed_password=hashed_password
+            )
+        return UserAddSuperUserFalse(
             **self.model_dump(exclude={"password"}),
-            hashed_password=hashed_password
-        )
+                hashed_password=hashed_password
+            )
 
 
-class UserAdd(BaseModel):
+class UserAddSuperUserTrue(BaseModel):
     username: str
     email: EmailStr
     hashed_password: str
-    is_superuser: bool
+    is_superuser: bool = True
+
+
+class UserAddSuperUserFalse(UserAddSuperUserTrue):
+    is_superuser: bool = False
 
 
 class UserLogin(BaseModel):
@@ -44,6 +53,7 @@ class UserWithHashedPassword(BaseModel):
     id: int
     email: EmailStr
     hashed_password: str
+
 
 class UserEdit(BaseModel):
     username: str | None = None

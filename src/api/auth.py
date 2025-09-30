@@ -3,7 +3,8 @@ from fastapi import APIRouter, Response, Body
 from src.api.dependencies import DBDep
 from src.constants import OPENAPI_EXAMPLES_REG, OPENAPI_EXAMPLES_LOGIN
 from src.exceptions import ObjectAlreadyExistsException, MailAlreadyExistHTTPException, UserPasswordException, \
-    ObjectNotFoundException, PasswordHTTPException, MailHTTPException
+    ObjectNotFoundException, PasswordHTTPException, MailHTTPException, SuperUserPasswordException, \
+    SuperUserPasswordHTTPException
 from src.schemas.users import UserRegRequest, UserLogin
 from src.services.auth import AuthService
 
@@ -19,6 +20,8 @@ async def user_registration(
         user = await AuthService(db).registration(data=data)
     except ObjectAlreadyExistsException:
         raise MailAlreadyExistHTTPException
+    except SuperUserPasswordException:
+        raise SuperUserPasswordHTTPException
     return user
 
 

@@ -4,12 +4,10 @@ from pydantic import BaseModel
 
 
 class CommentsRequest(BaseModel):
-
     content: str
 
 
 class CommentsAdd(CommentsRequest):
-
     task_id: int
     author_id: int
 

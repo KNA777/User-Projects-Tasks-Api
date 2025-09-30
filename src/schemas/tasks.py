@@ -1,6 +1,3 @@
-from typing import Annotated
-
-from fastapi import Depends, Query, HTTPException
 from pydantic import BaseModel
 
 from src.models.tasks import TaskStatus
@@ -40,7 +37,6 @@ class TasksAdd(TasksRequest):
 class TasksEditRequest(TasksRequest):
     pass
 
+
 class TasksEditAdd(TasksEditRequest):
     status: str
-
-
