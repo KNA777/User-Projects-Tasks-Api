@@ -5,7 +5,6 @@ from src.utils import check_permissions, check_superuser_permission
 
 class UserService(BaseService):
 
-
     async def get_all_users(self, current_user):
         check_superuser_permission(current_user)
         return await self.db.user.get_all()
@@ -27,4 +26,3 @@ class UserService(BaseService):
 
     async def get_user(self, **filter_by):
         return await self.db.user.get_one(**filter_by)
-

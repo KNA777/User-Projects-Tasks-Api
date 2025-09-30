@@ -2,6 +2,7 @@ from fastapi import Body
 from pydantic import BaseModel, EmailStr
 
 from src.schemas.projects import Projects
+from src.settings_config import settings
 
 
 class UserRegRequest(BaseModel):
@@ -10,26 +11,28 @@ class UserRegRequest(BaseModel):
     password: str = Body(..., min_length=6, max_length=18)
     superuser_psw: str | None = None
 
+    @classmethod
+    def validate_superuser_psw(cls, token):
+        if not token:
+            return False
+
+        from secrets import compare_digest
+
+        return compare_digest(token, settings.SUPERUSER_PASSWORD)
+
     def user_add(self, hashed_password: str):
-        if self.superuser_psw:
-            return UserAddSuperUserTrue(
-                **self.model_dump(exclude={"password"}),
-                hashed_password=hashed_password
-            )
-        return UserAddSuperUserFalse(
+        is_superuser = self.validate_superuser_psw(self.superuser_psw)
+        return UserAdd(
             **self.model_dump(exclude={"password"}),
-                hashed_password=hashed_password
-            )
+            hashed_password=hashed_password,
+            is_superuser=is_superuser,
+        )
 
 
-class UserAddSuperUserTrue(BaseModel):
+class UserAdd(BaseModel):
     username: str
     email: EmailStr
     hashed_password: str
-    is_superuser: bool = True
-
-
-class UserAddSuperUserFalse(UserAddSuperUserTrue):
     is_superuser: bool = False
 
 
