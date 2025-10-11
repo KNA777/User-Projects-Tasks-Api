@@ -3,8 +3,8 @@ services:
     build:
       context: .
     container_name: "final_task_backend_container"
-    ports:
-      - "7777:8000"
+#    ports:
+#      - "7777:8000"
     networks:
       - final_task_network
     environment:
@@ -76,6 +76,23 @@ services:
       interval: 5s
       timeout: 5s
       retries: 5
+
+  final_task_nginx_service:
+    image: nginx
+    container_name: "books_nginx_container"
+    ports:
+      - "80:80"
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf
+    networks:
+      - final_task_network
+    depends_on:
+      - final_task_backend_service
+    healthcheck:
+      test: [ "CMD", "curl", "-f", "http://localhost" ]
+      interval: 30s
+      timeout: 5s
+      retries: 3
 
 
 networks:
