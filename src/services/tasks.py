@@ -1,13 +1,11 @@
 from src.api.dependencies import StatusDep
 from src.exceptions import ObjectNotFoundException, TaskExistsHTTPException
-from src.models.tasks import TaskStatus
 from src.schemas.tasks import TasksRequest, TasksAdd, TasksEditRequest, TasksEditAdd
 from src.services.base import BaseService
 from src.services.notifications import NotificationService
 
 
 class TasksService(BaseService):
-
 
     async def create_task(self, data: TasksRequest, project_id: int, status: StatusDep):
         new_data = TasksAdd(**data.model_dump(), project_id=project_id, status=status)

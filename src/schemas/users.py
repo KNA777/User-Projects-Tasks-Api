@@ -11,8 +11,8 @@ class UserRegRequest(BaseModel):
     password: str = Body(..., min_length=6, max_length=18)
     superuser_psw: str | None = None
 
-    @classmethod
-    def validate_superuser_psw(cls, token):
+    @staticmethod
+    def validate_superuser_psw(token):
         if not token:
             return False
 
