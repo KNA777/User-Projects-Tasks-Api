@@ -1,13 +1,10 @@
 import pytest
 from httpx import AsyncClient, ASGITransport
-from pydantic import EmailStr
-
 from src.api.dependencies import get_db
 from src.context_manager_db.context_manager import DBManager
 from src.main import app
 from src.models import *
 from src.db_config import engine_null_pool, BaseOrm, async_session_null_pool
-from src.schemas.projects import ProjectAdd
 from src.schemas.users import UserRegRequest
 from src.services.auth import AuthService
 from src.settings_config import settings
