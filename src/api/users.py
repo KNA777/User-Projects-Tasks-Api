@@ -60,7 +60,8 @@ async def update_user(
 async def user_loading_avatar(
         user_id: CurrentUserIdDep,
         db: DBDep,
-        file: UploadFile):
+        file: UploadFile
+):
     result = await AvatarService(db).load_avatar(user_id=user_id, file=file)
     return result
 
